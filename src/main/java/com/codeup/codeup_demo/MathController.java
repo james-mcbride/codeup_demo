@@ -1,10 +1,8 @@
 package com.codeup.codeup_demo;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class MathController {
@@ -25,4 +23,25 @@ public class MathController {
             return "Sorry, don't recognize that request!";
         }
     }
+
+    @GetMapping("/rolldice")
+    public String rollDiceGuess() {
+        return "rollDiceGuess";
+    }
+
+    @PostMapping("/rolldice/n")
+    public String rollDice(@RequestParam(name = "guess") String guess, Model model) {
+        long randomInt = Math.round(Math.random()*5+1);
+        model.addAttribute("random", randomInt);
+        model.addAttribute("guess", guess);
+        String correct;
+        if (randomInt==Long.parseLong(guess)){
+            correct="correct";
+        } else{
+            correct="incorrect";
+        }
+        model.addAttribute("correct", correct );
+        return "rollDice";
+    }
+
 }
