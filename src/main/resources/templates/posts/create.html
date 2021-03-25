@@ -27,20 +27,22 @@
         <!--        </form>-->
     </div>
 </nav>
-<div class="" th:if="${post}">
-    <h1 th:text="${post.getTitle()}" />
-    <p th:text="${post.getBody()}" />
-    <form method="post" action="/posts/create">
-        <input type="hidden" name="postId" th:value="${post.getId()}" >
-        <input type="hidden" name="action" value="edit">
-        <button type="submit" class="btn btn-primary">Edit Post</button>
-    </form>
-    <form method="post" action="/posts/create">
-        <input type="hidden" name="postId" th:value="${post.getId()}" >
-        <input type="hidden" name="action" value="delete">
-        <button type="submit" class="btn btn-primary">Delete Post</button>
-    </form>
-</div>
+<form action="/posts" method="post">
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Post Title</label>
+        <input th:if="${editPost}" type="text" class="form-control" name="title"  th:value="${post.getTitle()}">
+        <input th:if="${!editPost}" type="text" class="form-control" id="exampleFormControlInput1" name="title" placeholder="">
+    </div>
+    <textarea th:if="${!editPost}" class="form-control" name="body" id="exampleFormControlTextarea1" rows="3" placeholder="Write your post here..."></textarea>
+    <textarea th:if="${editPost}" class="form-control" name="body"  rows="3" placeholder="" th:text="${post.getBody()}"></textarea>
+
+    <input th:if="${editPost}" type="hidden" class="form-control" name="id"  th:value="${post.getId()}">
+    <input th:if="${!editPost}" type="hidden" class="form-control" name="id"  th:value="0">
+
+    <button type="submit" class="btn btn-primary">Submit Post</button>
+
+</form>
+
 
 </body>
 </html>
