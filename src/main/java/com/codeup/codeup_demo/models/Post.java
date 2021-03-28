@@ -30,6 +30,14 @@ public class Post {
         this.body = body;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -39,6 +47,11 @@ public class Post {
 
     @Column(nullable = false, columnDefinition = "text")
     private String body;
+
+
+
+    @OneToOne
+    private User owner;
 
     public Post(){}
     public Post(String title, String body){

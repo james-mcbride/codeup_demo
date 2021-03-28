@@ -2,6 +2,7 @@ package com.codeup.codeup_demo.controllers;
 
 import com.codeup.codeup_demo.models.Post;
 import com.codeup.codeup_demo.repos.PostRepository;
+import com.codeup.codeup_demo.repos.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,11 @@ import java.util.Optional;
 public class PostController {
 
     private final PostRepository postDao;
+    private final UserRepository userDao;
 
-    public PostController(PostRepository postDao) {
+    public PostController(PostRepository postDao, UserRepository userDao) {
         this.postDao = postDao;
+        this.userDao=userDao;
     }
 
 
@@ -31,6 +34,7 @@ public class PostController {
     public String newPost(@RequestParam(name = "title") String title, @RequestParam(name = "body") String body, @RequestParam(name = "id") String postId, Model model) {
         if (postId.equalsIgnoreCase("0")) {
             Post post = new Post(title,body);
+            post.setOwner(userDao.getOne((long) 1));
             postDao.save(post);
         } else{
             Post post = new Post(title,body,Long.parseLong(postId));
