@@ -16,10 +16,13 @@
         <div class="card-body">
             <h4 class="card-title" th:text="${item.getTitle()}"/>
             <p class="card-text" th:text="${item.getBody()}"/>
-            <form method="post" action="/posts/show">
-                <input type="hidden" name="postId" th:value="${item.getId()}">
+<!--            <form method="post" action="/posts/show">-->
+<!--                <input type="hidden" name="postId" th:value="${item.getId()}">-->
+<!--                <button type="submit" class="btn btn-primary">View Post</button>-->
+<!--            </form>-->
+            <a th:href="${'posts/'+item.getId()}">
                 <button type="submit" class="btn btn-primary">View Post</button>
-            </form>
+            </a>
         </div>
     </div>
 </div>

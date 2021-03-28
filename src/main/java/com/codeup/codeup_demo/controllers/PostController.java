@@ -30,47 +30,45 @@ public class PostController {
         return "posts/index";
     }
 
-    @PostMapping("/posts")
-    public String newPost(@RequestParam(name = "title") String title, @RequestParam(name = "body") String body, @RequestParam(name = "id") String postId, Model model) {
-        if (postId.equalsIgnoreCase("0")) {
-            Post post = new Post(title,body);
-            post.setOwner(userDao.getOne((long) 1));
-            postDao.save(post);
-        } else{
-            Post post = new Post(title,body,Long.parseLong(postId));
-            postDao.save(post);
-        }
-        model.addAttribute("posts", postDao.findAll());
-        return "posts/index";
+//    @PostMapping("/posts")
+//    public String newPost(@ModelAttribute Post post,  Model model) {
+//
+//    }
+
+
+    @GetMapping("/posts/{postId}")
+    public String showPostsId(@PathVariable String postId ,Model model) {
+        Post post = postDao.getOne(Long.parseLong(postId));
+        model.addAttribute("post", postDao.getOne(Long.parseLong(postId)));
+        return "posts/show";
     }
 
-    @PostMapping("/posts/show")
-    public String showPosts(@RequestParam(name = "postId") String postId,Model model) {
-        System.out.println("postId: "+postId);
-        Post post = postDao.getOne(Long.parseLong(postId));
-        System.out.println(post.getBody());
-       model.addAttribute("post", postDao.getOne(Long.parseLong(postId)));
-        return "posts/show";
+    @GetMapping("/posts/{postId}/edit")
+    public String editPost(@PathVariable String postId ,Model model) {
+        model.addAttribute("editPost", true);
+        model.addAttribute("post", postDao.getOne(Long.parseLong(postId)));
+        return "posts/create";
+    }
+
+    @PostMapping("/posts/delete")
+    public String deletePost(@RequestParam(name = "postId") String postId,Model model) {
+        postDao.deleteById(Long.parseLong(postId));
+        model.addAttribute("posts", postDao.findAll());
+        return "redirect:/posts";
     }
 
     @GetMapping("/posts/create")
     public String create(Model model) {
         model.addAttribute("editPost", false);
+        model.addAttribute("post", new Post());
         return "posts/create";
     }
 
     @PostMapping("/posts/create")
-    public String editPost(@RequestParam(name = "postId") String postId,@RequestParam(name = "action") String action, Model model) {
-        if (action.equalsIgnoreCase("edit")) {
-            model.addAttribute("editPost", true);
-            model.addAttribute("post", postDao.getOne(Long.parseLong(postId)));
-            return "posts/create";
-        } else{
-
-            postDao.deleteById(Long.parseLong(postId));
-            model.addAttribute("posts", postDao.findAll());
-            return "posts/index";
-        }
+    public String editPost(@ModelAttribute Post post, Model model) {
+        postDao.save(post);
+        model.addAttribute("posts", postDao.findAll());
+        return "redirect:/posts";
     }
 
 //    @RequestMapping(path="/posts/create", method=RequestMethod.POST)
@@ -79,9 +77,4 @@ public class PostController {
 //        return "Create a new post";
 //    }
 
-    @RequestMapping(path = "/posts/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public String viewPOst(@PathVariable int id) {
-        return "Viewing post for id "+id;
-    }
 }

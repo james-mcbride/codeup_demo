@@ -8,17 +8,17 @@
 </head>
 <body>
 <nav th:replace="partials/partials :: navbar"></nav>
-<form action="/posts" method="post">
+
+<form th:action="@{/posts/create}" th:method="post" th:object="${post}">
     <div class="form-group">
         <label for="exampleFormControlInput1">Post Title</label>
-        <input th:if="${editPost}" type="text" class="form-control" name="title"  th:value="${post.getTitle()}">
-        <input th:if="${!editPost}" type="text" class="form-control" id="exampleFormControlInput1" name="title" placeholder="">
+        <input th:if="${editPost}" type="text" class="form-control" th:field="*{title}"  th:value="${post.getTitle()}">
+        <input th:if="${!editPost}" type="text" class="form-control" th:field="*{title}" id="exampleFormControlInput1" name="title" placeholder="">
     </div>
-    <textarea th:if="${!editPost}" class="form-control" name="body" id="exampleFormControlTextarea1" rows="3" placeholder="Write your post here..."></textarea>
-    <textarea th:if="${editPost}" class="form-control" name="body"  rows="3" placeholder="" th:text="${post.getBody()}"></textarea>
+    <textarea th:if="${!editPost}" class="form-control" th:field="*{body}" id="exampleFormControlTextarea1" rows="3" placeholder="Write your post here..."></textarea>
+    <textarea th:if="${editPost}" class="form-control" th:field="*{body}"  rows="3" placeholder="" th:text="${post.getBody()}"></textarea>
 
-    <input th:if="${editPost}" type="hidden" class="form-control" name="id"  th:value="${post.getId()}">
-    <input th:if="${!editPost}" type="hidden" class="form-control" name="id"  th:value="0">
+    <input th:if="${editPost}" type="hidden" class="form-control" th:field="*{id}"  th:value="${post.getId()}">
 
     <button type="submit" class="btn btn-primary">Submit Post</button>
 

@@ -14,14 +14,12 @@
         <h2 class="card-title" th:text="${post.getTitle()}"/>
         <p class="card-text" th:text="${post.getBody()}"/>
         <p th:if="${post.getOwner()}" class="card-text" th:text="${post.getOwner().getEmail()}"/>
-        <form class="float-left" method="post" action="/posts/create">
-            <input type="hidden" name="postId" th:value="${post.getId()}">
-            <input type="hidden" name="action" value="edit">
+        <form class="float-left" method="get" th:action="${'/posts/'+post.getId()+'/edit'}">
             <button type="submit" class="btn btn-primary">Edit Post</button>
         </form>
-        <form class="float-right" method="post" action="/posts/create">
+
+        <form class="float-right" method="post"  action="/posts/delete">
             <input type="hidden" name="postId" th:value="${post.getId()}">
-            <input type="hidden" name="action" value="delete">
             <button type="submit" class="btn btn-primary">Delete Post</button>
         </form>
     </div>
