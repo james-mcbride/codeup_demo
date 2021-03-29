@@ -1,6 +1,7 @@
 package com.codeup.codeup_demo.models;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -30,6 +31,14 @@ public class Post {
         this.body = body;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public User getOwner() {
         return owner;
     }
@@ -50,13 +59,20 @@ public class Post {
 
 
 
+    @Column(length = 50, nullable = true)
+    private String time;
+
+
     @OneToOne
     private User owner;
 
-    public Post(){}
+    public Post(){
+        this.time=LocalDateTime.now().toString();
+    }
     public Post(String title, String body){
         this.title=title;
         this.body=body;
+        this.time=LocalDateTime.now().toString();
     }
     public Post(String title, String body, Long id){
         this.title=title;

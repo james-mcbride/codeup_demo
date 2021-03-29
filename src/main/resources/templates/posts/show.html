@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="partials/partials :: head">
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -8,20 +8,23 @@
 </head>
 <body>
 <nav th:replace="partials/partials :: navbar"></nav>
+<div id="postContainer">
+    <div class="card text-center"  th:if="${post}">
+        <div class="card-body">
+            <h2 class="card-title" th:text="${post.getTitle()}"/>
+            <p class="card-text" th:text="${post.getBody()}"/>
+            <p th:if="${post.getOwner()}" class="card-text" th:text="${post.getOwner().getEmail()}"/>
+            <p th:if="${post.getTime()}" class="card-text" th:text="${post.getTime()}"/>
 
-<div class="card text-center" style="width: 80%;" th:if="${post}">\
-    <div class="card-body" >
-        <h2 class="card-title" th:text="${post.getTitle()}"/>
-        <p class="card-text" th:text="${post.getBody()}"/>
-        <p th:if="${post.getOwner()}" class="card-text" th:text="${post.getOwner().getEmail()}"/>
-        <form class="float-left" method="get" th:action="${'/posts/'+post.getId()+'/edit'}">
-            <button type="submit" class="btn btn-primary">Edit Post</button>
-        </form>
+            <form class="float-left" method="get" th:action="${'/posts/'+post.getId()+'/edit'}">
+                <button type="submit" class="btn btn-primary">Edit Post</button>
+            </form>
 
-        <form class="float-right" method="post"  action="/posts/delete">
-            <input type="hidden" name="postId" th:value="${post.getId()}">
-            <button type="submit" class="btn btn-primary">Delete Post</button>
-        </form>
+            <form class="float-right" method="post" action="/posts/delete">
+                <input type="hidden" name="postId" th:value="${post.getId()}">
+                <button type="submit" class="btn btn-primary">Delete Post</button>
+            </form>
+        </div>
     </div>
 </div>
 
