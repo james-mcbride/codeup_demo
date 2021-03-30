@@ -74,6 +74,13 @@ public class PostController {
         return "redirect:/posts";
     }
 
+    @GetMapping("/posts/search")
+    public String search(@RequestParam(name = "term") String term, Model model){
+       model.addAttribute("posts",postDao.findPostsByTitleContainingOrBodyContaining(term, term));
+       return "posts/index";
+
+    }
+
 //    @RequestMapping(path="/posts/create", method=RequestMethod.POST)
 //    @ResponseBody
 //    public String processCreatePost() {
