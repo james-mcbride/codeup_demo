@@ -9,6 +9,15 @@
 <body>
 <nav th:replace="partials/partials :: navbar"></nav>
 <div id="postContainer">
+    <div class="images">
+
+        <div th:if="${post.getImages().size()>0}" class="image"
+             th:each="image : ${post.getImages()}">
+            <img th:src="${image.getPath()}" >
+        </div>
+
+    </div>
+
     <div class="card text-center"  th:if="${post}">
         <div class="card-body">
             <h2 class="card-title" th:text="${post.getTitle()}"/>

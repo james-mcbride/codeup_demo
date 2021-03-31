@@ -9,22 +9,94 @@
 <body>
 <nav th:replace="partials/partials :: navbar"></nav>
 <div id="postForm">
-<form th:action="@{/posts/create}" th:method="post" th:object="${post}">
-    <div class="form-group">
-        <label for="exampleFormControlInput1">Post Title</label>
-        <input th:if="${editPost}" type="text" class="form-control" th:field="*{title}"  th:value="${post.getTitle()}">
-        <input th:if="${!editPost}" type="text" class="form-control" th:field="*{title}" id="exampleFormControlInput1" name="title" placeholder="">
-    </div>
-    <textarea th:if="${!editPost}" class="form-control" th:field="*{body}" id="exampleFormControlTextarea1" rows="3" placeholder="Write your post here..."></textarea>
-    <textarea th:if="${editPost}" class="form-control" th:field="*{body}"  rows="3" placeholder="" th:text="${post.getBody()}"></textarea>
+<!--<form th:action="@{/posts/create}" th:method="post" th:object="${post}">-->
+<!--    <div class="form-group">-->
+<!--        <label for="exampleFormControlInput1">Post Title</label>-->
+<!--        <input th:if="${editPost}" type="text" class="form-control" th:field="*{title}"  th:value="${post.getTitle()}">-->
+<!--        <input th:if="${!editPost}" type="text" class="form-control" th:field="*{title}" id="exampleFormControlInput1" name="title" placeholder="">-->
+<!--    </div>-->
+<!--    <textarea th:if="${!editPost}" class="form-control" th:field="*{body}" id="exampleFormControlTextarea1" rows="3" placeholder="Write your post here..."></textarea>-->
+<!--    <textarea th:if="${editPost}" class="form-control" th:field="*{body}"  rows="3" placeholder="" th:text="${post.getBody()}"></textarea>-->
 
-    <input th:if="${editPost}" type="hidden" class="form-control" th:field="*{id}"  th:value="${post.getId()}">
+<!--    <div id="adImages"></div>-->
+<!--    <button id="addImage">Add Image!</button>-->
+<!--    <input th:if="${editPost}" type="hidden" class="form-control" th:field="*{id}"  th:value="${post.getId()}">-->
 
-    <button type="submit" class="btn btn-primary">Submit Post</button>
-</form>
+<!--    <button type="submit" class="btn btn-primary">Submit Post</button>-->
+<!--</form>-->
+    <form th:action="@{/posts/create}" th:method="post" th:object="${post}" th:if="${post.id==0}">
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Post Title</label>
+            <input type="text" class="form-control" th:field="*{title}" id="exampleFormControlInput1" name="title" placeholder="">
+        </div>
+        <textarea class="form-control" th:field="*{body}" id="exampleFormControlTextarea1" rows="3" placeholder="Write your post here..."></textarea>
+        <div id="adImages" class="card-group"></div>
+        <button id="addImage">Add Image!</button>
+        <button type="submit" class="btn btn-primary">Submit Post</button>
+    </form>
+    <form th:action="${'/posts/'+post.id+'/edit'}" th:method="post" th:object="${post}" th:if="${post.id!=0}">
+        <div class="form-group">
+            <label>Post Title</label>
+            <input  type="text" class="form-control" th:field="*{title}"  th:value="${post.getTitle()}">
+        </div>
+        <textarea  class="form-control" th:field="*{body}"  rows="3" placeholder="" th:text="${post.getBody()}"></textarea>
+
+
+        <button type="submit" class="btn btn-primary">Submit Post</button>
+    </form>
+
 </div>
 
 
+<script>
+    let addImageButton = document.getElementById("addImage");
+    let adImages = document.getElementById("adImages");
+    let imagesTotal=0;
+    let imageCount=document.createElement("input");
+    imageCount.setAttribute("type", "hidden");
+    imageCount.setAttribute("name", "numImages");
+    imageCount.setAttribute("value", imagesTotal);
+    adImages.appendChild(imageCount)
 
+
+
+
+    addImageButton.addEventListener("click", function(event){
+        event.preventDefault();
+
+        let imageCard=document.createElement("div");
+        imageCard.setAttribute("class", "card");
+
+        let cardBody=document.createElement("div");
+        cardBody.setAttribute("class", "card-body text-center");
+
+        let newImage=document.createElement("input");
+        newImageLabel =document.createElement("label");
+        newImageLabel.setAttribute("for", `image${imagesTotal}`);
+        newImageLabel.innerText="Insert image link"
+        newImage.setAttribute("type", "text")
+        newImage.setAttribute("id", `image${imagesTotal}`)
+        newImage.setAttribute("class", "form-control");
+        newImage.setAttribute("name", `image${imagesTotal}`)
+        cardBody.appendChild(newImageLabel);
+        cardBody.appendChild(newImage);
+        let image=document.createElement("img");
+        image.setAttribute("class", "card-img-top");
+        image.setAttribute("src", "/images/placeholder.png")
+        imageCard.appendChild(image);
+        imageCard.appendChild(cardBody)
+        adImages.appendChild(imageCard);
+        imagesTotal++;
+        adImages.removeChild(imageCount)
+        imageCount.setAttribute("value", `${imagesTotal}`);
+        adImages.appendChild(imageCount)
+
+        newImage.addEventListener("change", ()=>{
+            image.setAttribute("src", newImage.value)
+        })
+
+    })
+
+</script>
 </body>
 </html>

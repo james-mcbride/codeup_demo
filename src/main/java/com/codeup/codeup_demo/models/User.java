@@ -8,6 +8,14 @@ import java.util.List;
 @Table(name="users")
 public class User {
 
+    User (){};
+    User (String username, String password, String email){
+        this.username=username;
+        this.password=password;
+        this.email=email;
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -21,6 +29,9 @@ public class User {
 
     @Column(nullable = false, length = 100)
     private String email;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    private List<Post> posts;
 
     public long getId() {
         return id;

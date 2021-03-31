@@ -2,6 +2,7 @@ package com.codeup.codeup_demo.models;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -57,17 +58,32 @@ public class Post {
     @Column(nullable = false, columnDefinition = "text")
     private String body;
 
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
+    private List<Image> images;
 
 
     @Column(length = 50, nullable = true)
     private String time;
 
 
-    @OneToOne
+//    @OneToOne
+//    private User owner;
+
+    @ManyToOne
+    @JoinColumn (name = "owner_id")
     private User owner;
 
     public Post(){
         this.time=LocalDateTime.now().toString();
+
     }
     public Post(String title, String body){
         this.title=title;

@@ -53,15 +53,39 @@
 
 #postForm{
     padding:20px;
+    height: 100%;
 }
 
 #postContainer{
     padding:20px;
+    height: 100%;
 
 }
-
+.images{
+    display:flex;
+    justify-content: space-evenly;
+    height: 50%;
+    align-items: center;
+}
 #postContainer .card{
     width: 80%;
-    margin-left: auto;
+    margin-left: auto;=y
     margin-right: auto;
 }
+
+html{
+    height: 100%;
+}
+body{
+    height: 100%;
+}
+
+#adImages .card{
+    max-width: 50%;
+    min-width: 300px;
+    margin: 20px;
+    max-height: 50%;
+}
+
+
+
