@@ -25,23 +25,35 @@
 <!--    <button type="submit" class="btn btn-primary">Submit Post</button>-->
 <!--</form>-->
     <form th:action="@{/posts/create}" th:method="post" th:object="${post}" th:if="${post.id==0}">
+        <div id="adImages" class="card-group"></div>
         <div class="form-group">
             <label for="exampleFormControlInput1">Post Title</label>
             <input type="text" class="form-control" th:field="*{title}" id="exampleFormControlInput1" name="title" placeholder="">
         </div>
         <textarea class="form-control" th:field="*{body}" id="exampleFormControlTextarea1" rows="3" placeholder="Write your post here..."></textarea>
-        <div id="adImages" class="card-group"></div>
         <button id="addImage">Add Image!</button>
         <button type="submit" class="btn btn-primary">Submit Post</button>
     </form>
     <form th:action="${'/posts/'+post.id+'/edit'}" th:method="post" th:object="${post}" th:if="${post.id!=0}">
+        <div id="adImagesEdit" class="card-group">
+            <div class="card" th:each="image : ${post.getImages()}">
+                <img class="card-img-top" th:src="${image.getPath()}">
+                <div class="card-body text-center">
+                    <label for="image0" >Insert image link</label>
+                    <input type="hidden"  class="form-control" th:name="${'imageId'+imageStat.index}" th:value="${image.getId()}">
+                    <div th:text="${'image'+i}"></div>
+                    <input type="text" id="image0" class="form-control" th:name="${'image'+imageStat.index}" th:value="${image.getPath()}">
+                </div>
+            </div>
+            <input type="hidden" id="numImages" name="numImages" th:value="${post.getImages().size()}">
+        </div>
         <div class="form-group">
             <label>Post Title</label>
             <input  type="text" class="form-control" th:field="*{title}"  th:value="${post.getTitle()}">
         </div>
         <textarea  class="form-control" th:field="*{body}"  rows="3" placeholder="" th:text="${post.getBody()}"></textarea>
 
-
+<!--        <button id="addImageEdit">Add Image!</button>-->
         <button type="submit" class="btn btn-primary">Submit Post</button>
     </form>
 
@@ -71,7 +83,7 @@
         cardBody.setAttribute("class", "card-body text-center");
 
         let newImage=document.createElement("input");
-        newImageLabel =document.createElement("label");
+        let newImageLabel =document.createElement("label");
         newImageLabel.setAttribute("for", `image${imagesTotal}`);
         newImageLabel.innerText="Insert image link"
         newImage.setAttribute("type", "text")
@@ -96,6 +108,45 @@
         })
 
     })
+
+    //
+    // let addImageEditButton = document.getElementById("addImageEdit");
+    // let adImagesEdit = document.getElementById("adImagesEdit");
+    // let imagesTotalEdit=document.getElementById("numImages")
+    //
+    //
+    // addImageEditButton.addEventListener("click", function(event){
+    //     event.preventDefault();
+    //
+    //     let imageCard=document.createElement("div");
+    //     imageCard.setAttribute("class", "card");
+    //
+    //     let cardBody=document.createElement("div");
+    //     cardBody.setAttribute("class", "card-body text-center");
+    //
+    //     let newImage=document.createElement("input");
+    //     let newImageLabel =document.createElement("label");
+    //     newImageLabel.setAttribute("for", `image${imagesTotalEdit}`);
+    //     newImageLabel.innerText="Insert image link"
+    //     newImage.setAttribute("type", "text")
+    //     newImage.setAttribute("id", `image${imagesTotalEdit}`)
+    //     newImage.setAttribute("class", "form-control");
+    //     newImage.setAttribute("name", `image${imagesTotalEdit}`)
+    //     cardBody.appendChild(newImageLabel);
+    //     cardBody.appendChild(newImage);
+    //     let image=document.createElement("img");
+    //     image.setAttribute("class", "card-img-top");
+    //     image.setAttribute("src", "/images/placeholder.png")
+    //     imageCard.appendChild(image);
+    //     imageCard.appendChild(cardBody)
+    //     adImagesEdit.appendChild(imageCard);
+    //     imagesTotalEdit.value=Number(imagesTotalEdit.value)+1
+    //
+    //     newImage.addEventListener("change", ()=>{
+    //         image.setAttribute("src", newImage.value)
+    //     })
+    //
+    // })
 
 </script>
 </body>

@@ -78,14 +78,44 @@ public class PostController {
         return "posts/create";
     }
     @PostMapping("/posts/{id}/edit")
-    public String editPost(@ModelAttribute Post post, @PathVariable String id, Model model) {
+    public String editPost(@ModelAttribute Post post, @RequestParam(required = false) String image0, @RequestParam(required = false) String imageId0, @RequestParam(required = false) String image1,@RequestParam(required = false) String imageId1,  @RequestParam(required = false) String image2, @RequestParam(required = false) String image3, @RequestParam(required = false) String image4, @RequestParam(required = false) String image5,@RequestParam String numImages,@PathVariable String id, Model model) {
         post.setId(Long.parseLong(id));
+        System.out.println("id: "+post.getId());
+        System.out.println("body: "+post.getBody());
+        System.out.println("title: "+post.getTitle());
+
+        post.setOwner((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
         postDao.save(post);
+        int numberOfImages=Integer.parseInt(numImages);
+        if(numberOfImages>0){
+            System.out.println(image0);
+            imageDao.save(new Image(Long.parseLong(imageId0),image0, post));
+        }
+        if(numberOfImages>1){
+            System.out.println(image1);
+
+            imageDao.save(new Image(Long.parseLong(imageId1),image1, post));
+        }
+        if(numberOfImages>2){
+            System.out.println(image2);
+            imageDao.save(new Image(image2, post));
+        }
+        if(numberOfImages>3){
+            Image newImage= new Image(image3);
+            imageDao.save(new Image(image3, post));
+
+        }
+        if(numberOfImages>4){
+            Image newImage= new Image(image4);
+            imageDao.save(new Image(image4, post));
+
+        }
         return "redirect:/posts";
     }
 
     @PostMapping("/posts/create")
-    public String editPost(@ModelAttribute Post post, @RequestParam(required = false) String image0, @RequestParam(required = false) String image1, @RequestParam(required = false) String image2, @RequestParam(required = false) String image3, @RequestParam(required = false) String image4, @RequestParam(required = false) String image5, @RequestParam String numImages, Model model) {
+    public String createPost(@ModelAttribute Post post, @RequestParam(required = false) String image0, @RequestParam(required = false) String image1, @RequestParam(required = false) String image2, @RequestParam(required = false) String image3, @RequestParam(required = false) String image4, @RequestParam(required = false) String image5, @RequestParam String numImages, Model model) {
         int numberOfImages=Integer.parseInt(numImages);
         post.setOwner((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Post newPost = postDao.save(post);
