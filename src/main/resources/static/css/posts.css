@@ -61,15 +61,28 @@
     height: 100%;
 
 }
-.images{
-    display:flex;
-    justify-content: space-evenly;
+.card-group{
+
     height: 50%;
-    align-items: center;
 }
-#postContainer .card{
+#blogImages .card{
+    height: 100%
+}
+#blogImages img{
+    max-height: 100%;
+    object-fit: contain;
+}
+/*.image{*/
+/*    height: 100%;*/
+/*    display:flex;*/
+/*}*/
+/*.images img{*/
+/*    max-height: 100%;*/
+/*    align-items: center;*/
+/*}*/
+#postContainer>.card{
     width: 80%;
-    margin-left: auto;=y
+    margin-left: auto;
     margin-right: auto;
 }
 
@@ -85,6 +98,22 @@ body{
     min-width: 300px;
     margin: 20px;
     max-height: 50%;
+}
+
+.blogContent{
+    position: relative
+}
+
+.blogDate{
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+.blogTime{
+    position: absolute;
+    top: 2px;
+    right: 2px;
 }
 
 

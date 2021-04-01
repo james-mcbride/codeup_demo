@@ -2,10 +2,12 @@ package com.codeup.codeup_demo.controllers;
 
 import com.codeup.codeup_demo.models.Image;
 import com.codeup.codeup_demo.models.Post;
+import com.codeup.codeup_demo.models.User;
 import com.codeup.codeup_demo.repos.ImageRepository;
 import com.codeup.codeup_demo.repos.PostRepository;
 import com.codeup.codeup_demo.repos.UserRepository;
 import com.codeup.codeup_demo.services.EmailService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -85,7 +87,7 @@ public class PostController {
     @PostMapping("/posts/create")
     public String editPost(@ModelAttribute Post post, @RequestParam(required = false) String image0, @RequestParam(required = false) String image1, @RequestParam(required = false) String image2, @RequestParam(required = false) String image3, @RequestParam(required = false) String image4, @RequestParam(required = false) String image5, @RequestParam String numImages, Model model) {
         int numberOfImages=Integer.parseInt(numImages);
-        post.setOwner(userDao.getOne(1L));
+        post.setOwner((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Post newPost = postDao.save(post);
         emailService.prepareAndSend(newPost, "New post created!", "Thanks for your new post!");
         if(numberOfImages>0){
