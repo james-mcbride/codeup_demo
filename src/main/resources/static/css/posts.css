@@ -53,23 +53,45 @@
 
 #postForm{
     padding:20px;
+    height: calc(100% - 80px);
+}
+
+#postForm form{
     height: 100%;
 }
+
 
 #postContainer{
     padding:20px;
     height: 100%;
 
 }
-.images{
-    display:flex;
-    justify-content: space-evenly;
-    height: 50%;
-    align-items: center;
+#postForm .card-group{
+    height: 65%
 }
-#postContainer .card{
+.card-group{
+    height: 50%;
+}
+
+
+#blogImages .card{
+    height: 100%
+}
+#blogImages img{
+    max-height: 100%;
+    object-fit: contain;
+}
+/*.image{*/
+/*    height: 100%;*/
+/*    display:flex;*/
+/*}*/
+/*.images img{*/
+/*    max-height: 100%;*/
+/*    align-items: center;*/
+/*}*/
+#postContainer>.card{
     width: 80%;
-    margin-left: auto;=y
+    margin-left: auto;
     margin-right: auto;
 }
 
@@ -79,12 +101,59 @@ html{
 body{
     height: 100%;
 }
-
+#adImages{
+    justify-content: space-evenly;
+}
 #adImages .card{
     max-width: 50%;
     min-width: 300px;
-    margin: 20px;
-    max-height: 50%;
+    padding: 10px;
+    height: 95%;
+    flex-grow: 0
+}
+
+#adImages img{
+    max-height: 70%;
+    object-fit: contain;
+}
+
+#adImagesEdit{
+    justify-content: space-evenly;
+}
+#adImagesEdit .card-body{
+    position: absolute;
+    bottom: 5px;
+    left: 12.5%;
+    width: 75%;
+    background-color: rgba(255,255,255,.7)
+}
+#adImagesEdit .card{
+    max-width: 50%;
+    min-width: 300px;
+    padding: 10px;
+    height: 95%;
+    flex-grow: 0
+}
+
+#adImagesEdit img{
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.blogContent{
+    position: relative
+}
+
+.blogDate{
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+.blogTime{
+    position: absolute;
+    top: 2px;
+    right: 2px;
 }
 
 

@@ -1,38 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="partials/partials :: head">
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">-->
 
 </head>
 <body>
 <nav th:replace="partials/partials :: navbar"></nav>
 <div id="postContainer">
-    <div class="images">
-
-        <div th:if="${post.getImages().size()>0}" class="image"
+    <div class="card-group" id="blogImages" th:if="${post.getImages().size()>0}">
+        <div class="card"
              th:each="image : ${post.getImages()}">
-            <img th:src="${image.getPath()}" >
+            <img class="card-img-top" th:src="${image.getPath()}" alt="Card image cap">
+            <div class="card-body">
+<!--                <h5 class="card-title">Card title</h5>-->
+            </div>
         </div>
 
     </div>
 
+
+
     <div class="card text-center"  th:if="${post}">
-        <div class="card-body">
+        <div class="card-body blogContent">
             <h2 class="card-title" th:text="${post.getTitle()}"/>
             <p class="card-text" th:text="${post.getBody()}"/>
             <p th:if="${post.getOwner()}" class="card-text" th:text="${post.getOwner().getEmail()}"/>
-            <p th:if="${post.getTime()}" class="card-text" th:text="${post.getTime()}"/>
+            <div th:if="${post.getTime()}" class="card-text blogDate" th:text="${post.getTime().substring(0,11)}"/>
+            <div th:if="${post.getTime()}" class="card-text blogTime" th:text="${post.getTime().substring(11)}"/>
+            <div sec:authorize="isAuthenticated()">
+<!--                <div th:if="${#authentication.principal.id == post.getOwner().getId()}">Food</div>-->
 
-            <form class="float-left" method="get" th:action="${'/posts/'+post.getId()+'/edit'}">
-                <button type="submit" class="btn btn-primary">Edit Post</button>
-            </form>
+                <!--                <div th:text="${'Your id: ' + #authentication.principal.id + ' and the post id is: '+post.getOwner().getId()}">Food</div>-->
+                <form th:if="${#authentication.principal.id == post.getOwner().getId()}" class="float-left" method="get" th:action="${'/posts/'+post.getId()+'/edit'}" >
+                    <button type="submit" class="btn btn-primary">Edit Post</button>
+                </form>
 
-            <form class="float-right" method="post" action="/posts/delete">
-                <input type="hidden" name="postId" th:value="${post.getId()}">
-                <button type="submit" class="btn btn-primary">Delete Post</button>
-            </form>
+                <form th:if="${#authentication.principal.id == post.getOwner().getId()}" class="float-right" method="post" action="/posts/delete">
+                    <input type="hidden" name="postId" th:value="${post.getId()}">
+                    <button type="submit" class="btn btn-primary">Delete Post</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

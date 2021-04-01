@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+>
 <head th:fragment="head">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -15,8 +17,19 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/posts">Home <span class="sr-only">(current)</span></a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/login" sec:authorize="!isAuthenticated()">Login <span class="sr-only"></span></a>
+            </li>
             <li class="nav-item">
-                <a class="nav-link" href="/posts/create">Create Post</a>
+                <a class="nav-link" href="/posts/create" sec:authorize="isAuthenticated()">Create Post</a>
+            </li>
+        </ul>
+        <ul>
+            <!-- More links here... -->
+            <li>
+                <form th:action="@{/logout}" th:method="post" sec:authorize="isAuthenticated()">
+                    <button class="btn-link btn" style="margin-top: 8px">Logout</button>
+                </form>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0"  method="get" action="/posts/search">
@@ -25,9 +38,7 @@
         </form>
     </div>
 </nav>
-<div th:fragment="test">
-    TEST FRAGMENT
-</div>
+
 
 </body>
 </html>

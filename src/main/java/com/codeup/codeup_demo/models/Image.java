@@ -14,6 +14,11 @@ public class Image {
         this.path=path;
         this.post = post;
     }
+    public Image(Long id,String path, Post post){
+        this.id=id;
+        this.path=path;
+        this.post = post;
+    }
 
     public long getId() {
         return id;
