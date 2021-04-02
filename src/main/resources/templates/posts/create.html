@@ -36,16 +36,17 @@
     </form>
     <form th:action="${'/posts/'+post.id+'/edit'}" th:method="post" th:object="${post}" th:if="${post.id!=0}">
         <div id="adImagesEdit" class="card-group">
-            <div class="card" th:each="image : ${post.getImages()}">
+            <div class="card" th:each="image : ${post.getImages()}" th:id="${'card'+imageStat.index}">
+                <button type="button" class="btn btn-outline-danger" th:id="${'deleteButton'+imageStat.index}">Delete</button>
                 <img class="card-img-top" th:src="${image.getPath()}">
                 <div class="card-body text-center">
-                    <label for="image0" >Insert image link</label>
-                    <input type="hidden"  class="form-control" th:name="${'imageId'+imageStat.index}" th:value="${image.getId()}">
-                    <div th:text="${'image'+i}"></div>
-                    <input type="text" id="image0" class="form-control" th:name="${'image'+imageStat.index}" th:value="${image.getPath()}">
+                    <label th:for="${'image'+imageStat.index}" >Insert image link</label>
+                    <input type="hidden"  class="form-control" th:id="${'imageId'+imageStat.index}" th:name="${'imageId'+imageStat.index}" th:value="${image.getId()}">
+                    <div th:text="${'image'+imageStat.index}"></div>
+                    <input type="text" th:id="${'image'+imageStat.index}" class="form-control" th:name="${'image'+imageStat.index}" th:value="${image.getPath()}">
                 </div>
             </div>
-            <input type="hidden" id="numImages" name="numImages" th:value="${post.getImages().size()}">
+            <input type="hidden" id="numEditImages" name="numEditImages" th:value="${post.getImages().size()}">
         </div>
         <div class="form-group">
             <label>Post Title</label>
@@ -53,7 +54,7 @@
         </div>
         <textarea  class="form-control" th:field="*{body}"  rows="3" placeholder="" th:text="${post.getBody()}"></textarea>
 
-<!--        <button id="addImageEdit">Add Image!</button>-->
+        <button id="addImageEdit">Add Image!</button>
         <button type="submit" class="btn btn-primary">Submit Post</button>
     </form>
 
@@ -61,7 +62,9 @@
 
 
 <script>
-    let addImageButton = document.getElementById("addImage");
+    let url = window.location.href
+    if (url.toString().includes("create")) {
+        let addImageButton = document.getElementById("addImage");
     let adImages = document.getElementById("adImages");
     let imagesTotal=0;
     let imageCount=document.createElement("input");
@@ -72,27 +75,34 @@
 
 
 
-
-    addImageButton.addEventListener("click", function(event){
+    addImageButton.addEventListener("click", function (event) {
         event.preventDefault();
 
-        let imageCard=document.createElement("div");
+        let imageCard = document.createElement("div");
         imageCard.setAttribute("class", "card");
 
-        let cardBody=document.createElement("div");
+        let deleteButton=document.createElement("button");
+        deleteButton.setAttribute("id", `deleteButton${imagesTotal}`);
+        deleteButton.setAttribute("type", "button");
+        deleteButton.setAttribute("class", "btn btn-outline-danger")
+        deleteButton.innerHTML="delete";
+        imageCard.appendChild(deleteButton)
+
+
+        let cardBody = document.createElement("div");
         cardBody.setAttribute("class", "card-body text-center");
 
-        let newImage=document.createElement("input");
-        let newImageLabel =document.createElement("label");
+        let newImage = document.createElement("input");
+        let newImageLabel = document.createElement("label");
         newImageLabel.setAttribute("for", `image${imagesTotal}`);
-        newImageLabel.innerText="Insert image link"
+        newImageLabel.innerText = "Insert image link"
         newImage.setAttribute("type", "text")
         newImage.setAttribute("id", `image${imagesTotal}`)
         newImage.setAttribute("class", "form-control");
         newImage.setAttribute("name", `image${imagesTotal}`)
         cardBody.appendChild(newImageLabel);
         cardBody.appendChild(newImage);
-        let image=document.createElement("img");
+        let image = document.createElement("img");
         image.setAttribute("class", "card-img-top");
         image.setAttribute("src", "/images/placeholder.png")
         imageCard.appendChild(image);
@@ -103,50 +113,102 @@
         imageCount.setAttribute("value", `${imagesTotal}`);
         adImages.appendChild(imageCount)
 
+        newImage.addEventListener("change", () => {
+            image.setAttribute("src", newImage.value)
+        })
+
+        deleteButton.addEventListener("click", ()=>{
+            adImages.removeChild(imageCard)
+        })
+
+    })
+}
+
+
+    let addImageEditButton = document.getElementById("addImageEdit");
+    let adImagesEdit = document.getElementById("adImagesEdit");
+    let imagesTotalEdit=document.getElementById("numEditImages")
+
+    for (let i=0; i<imagesTotalEdit.value; i++){
+        let deleteButton=document.getElementById(`deleteButton${i}`)
+        deleteButton.addEventListener("click",()=>{
+            let card=document.getElementById(`card${i}`);
+            let id=document.getElementById(`imageId${i}`).value
+            console.log(id)
+            adImagesEdit.removeChild(card);
+            let newImage=document.createElement("input");
+            newImage.setAttribute("type", "hidden")
+            newImage.setAttribute("id", `image${i}`)
+            newImage.setAttribute("name", `image${i}`)
+            newImage.setAttribute("value", "delete")
+            let newImageId=document.createElement("input");
+            newImageId.setAttribute("type", "hidden")
+            newImageId.setAttribute("id", `imageId${i}`)
+            newImageId.setAttribute("name", `imageId${i}`)
+            newImageId.setAttribute("value", id)
+            adImagesEdit.appendChild(newImage)
+            adImagesEdit.appendChild(newImageId)
+        })
+    }
+
+
+    addImageEditButton.addEventListener("click", function(event){
+        console.log('creating new image')
+        event.preventDefault();
+
+        let imageCard=document.createElement("div");
+        imageCard.setAttribute("class", "card");
+
+        let cardBody=document.createElement("div");
+        cardBody.setAttribute("class", "card-body text-center");
+
+        let deleteButton=document.createElement("button");
+        deleteButton.setAttribute("id", `deleteButton${imagesTotalEdit}`);
+        deleteButton.setAttribute("type", "button");
+        deleteButton.setAttribute("class", "btn btn-outline-danger")
+        deleteButton.innerHTML="delete";
+        imageCard.appendChild(deleteButton)
+
+        let newImage=document.createElement("input");
+        let newImageLabel =document.createElement("label");
+        newImageLabel.setAttribute("for", `image${imagesTotalEdit.value}`);
+        newImageLabel.innerText="Insert image link"
+        newImage.setAttribute("type", "text")
+        newImage.setAttribute("id", `image${imagesTotalEdit.value}`)
+        newImage.setAttribute("class", "form-control");
+        newImage.setAttribute("name", `image${imagesTotalEdit.value}`)
+        let newImageId=document.createElement("input");
+        newImageId.setAttribute("type", "hidden")
+        newImageId.setAttribute("id", `imageId${imagesTotalEdit.value}`)
+        newImageId.setAttribute("name", `imageId${imagesTotalEdit.value}`)
+        newImageId.setAttribute("value", "new")
+        adImagesEdit.appendChild(newImageId)
+        cardBody.appendChild(newImageLabel);
+        cardBody.appendChild(newImage);
+        let image=document.createElement("img");
+        image.setAttribute("class", "card-img-top");
+        image.setAttribute("src", "/images/placeholder.png")
+        imageCard.appendChild(image);
+        imageCard.appendChild(cardBody)
+        adImagesEdit.appendChild(imageCard);
+        imagesTotalEdit.value=Number(imagesTotalEdit.value)+1
+        console.log(imagesTotalEdit.value)
+
         newImage.addEventListener("change", ()=>{
             image.setAttribute("src", newImage.value)
         })
 
-    })
+        deleteButton.addEventListener("click", ()=>{
+            adImagesEdit.removeChild(imageCard);
+            let newImage=document.createElement("input");
+            newImage.setAttribute("type", "hidden")
+            newImage.setAttribute("id", `image${imagesTotalEdit.value}`)
+            newImage.setAttribute("name", `image${imagesTotalEdit.value}`)
+            newImage.setAttribute("value", "delete")
+        })
 
-    //
-    // let addImageEditButton = document.getElementById("addImageEdit");
-    // let adImagesEdit = document.getElementById("adImagesEdit");
-    // let imagesTotalEdit=document.getElementById("numImages")
-    //
-    //
-    // addImageEditButton.addEventListener("click", function(event){
-    //     event.preventDefault();
-    //
-    //     let imageCard=document.createElement("div");
-    //     imageCard.setAttribute("class", "card");
-    //
-    //     let cardBody=document.createElement("div");
-    //     cardBody.setAttribute("class", "card-body text-center");
-    //
-    //     let newImage=document.createElement("input");
-    //     let newImageLabel =document.createElement("label");
-    //     newImageLabel.setAttribute("for", `image${imagesTotalEdit}`);
-    //     newImageLabel.innerText="Insert image link"
-    //     newImage.setAttribute("type", "text")
-    //     newImage.setAttribute("id", `image${imagesTotalEdit}`)
-    //     newImage.setAttribute("class", "form-control");
-    //     newImage.setAttribute("name", `image${imagesTotalEdit}`)
-    //     cardBody.appendChild(newImageLabel);
-    //     cardBody.appendChild(newImage);
-    //     let image=document.createElement("img");
-    //     image.setAttribute("class", "card-img-top");
-    //     image.setAttribute("src", "/images/placeholder.png")
-    //     imageCard.appendChild(image);
-    //     imageCard.appendChild(cardBody)
-    //     adImagesEdit.appendChild(imageCard);
-    //     imagesTotalEdit.value=Number(imagesTotalEdit.value)+1
-    //
-    //     newImage.addEventListener("change", ()=>{
-    //         image.setAttribute("src", newImage.value)
-    //     })
-    //
-    // })
+
+    })
 
 </script>
 </body>

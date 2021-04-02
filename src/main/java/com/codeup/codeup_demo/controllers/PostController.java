@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -78,7 +79,7 @@ public class PostController {
         return "posts/create";
     }
     @PostMapping("/posts/{id}/edit")
-    public String editPost(@ModelAttribute Post post, @RequestParam(required = false) String image0, @RequestParam(required = false) String imageId0, @RequestParam(required = false) String image1,@RequestParam(required = false) String imageId1,  @RequestParam(required = false) String image2, @RequestParam(required = false) String image3, @RequestParam(required = false) String image4, @RequestParam(required = false) String image5,@RequestParam String numImages,@PathVariable String id, Model model) {
+    public String editPost(@ModelAttribute Post post, @RequestParam(required = false) String image0, @RequestParam(required = false) String imageId0, @RequestParam(required = false) String image1, @RequestParam(required = false) String imageId1,  @RequestParam(required = false) String image2, @RequestParam(required = false) String imageId2, @RequestParam(required = false) String image3,@RequestParam(required = false) String imageId3, @RequestParam(required = false) String image4, @RequestParam(required = false) String imageId4, @RequestParam(required = false) String image5,@RequestParam(required = false) String imageId5, @RequestParam String numEditImages,@PathVariable String id, Model model) {
         post.setId(Long.parseLong(id));
         System.out.println("id: "+post.getId());
         System.out.println("body: "+post.getBody());
@@ -87,28 +88,69 @@ public class PostController {
         post.setOwner((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         postDao.save(post);
-        int numberOfImages=Integer.parseInt(numImages);
+        int numberOfImages=Integer.parseInt(numEditImages);
         if(numberOfImages>0){
-            System.out.println(image0);
-            imageDao.save(new Image(Long.parseLong(imageId0),image0, post));
+            if (image0!=null) {
+                System.out.println(image0);
+                if (image0.equalsIgnoreCase("delete")) {
+                    imageDao.deleteById(Long.parseLong(imageId0));
+                } else if(imageId0.equalsIgnoreCase("new")){
+                    imageDao.save(new Image( image0, post));
+                }else{
+                    imageDao.save(new Image(Long.parseLong(imageId0), image0, post));
+                }
+            }
         }
         if(numberOfImages>1){
             System.out.println(image1);
-
-            imageDao.save(new Image(Long.parseLong(imageId1),image1, post));
+            if (image1!=null) {
+                if (image1.equalsIgnoreCase("delete")) {
+                    imageDao.deleteById(Long.parseLong(imageId1));
+                }  else if(imageId1.equalsIgnoreCase("new")){
+                    imageDao.save(new Image( image1, post));
+                }else{
+                    imageDao.save(new Image(Long.parseLong(imageId1), image1, post));
+                }
+            }
         }
         if(numberOfImages>2){
             System.out.println(image2);
-            imageDao.save(new Image(image2, post));
+            System.out.println(imageId2);
+            if (image2!=null) {
+                if (image2.equalsIgnoreCase("delete")) {
+                    imageDao.deleteById(Long.parseLong(imageId2));
+                }  else if(imageId2.equalsIgnoreCase("new")){
+                    imageDao.save(new Image( image2, post));
+                }else {
+                    System.out.println("image2: " + image2);
+                    imageDao.save(new Image(Long.parseLong(imageId2),image2, post));
+                }
+            }
         }
         if(numberOfImages>3){
-            Image newImage= new Image(image3);
-            imageDao.save(new Image(image3, post));
+            System.out.println(image3);
+            if (image3!=null) {
+                if (image3.equalsIgnoreCase("delete")) {
+                    imageDao.deleteById(Long.parseLong(imageId3));
+                }  else if(imageId3.equalsIgnoreCase("new")){
+                    imageDao.save(new Image( image3, post));
+                }else {
+                    imageDao.save(new Image(Long.parseLong(imageId3),image3, post));
+                }
+            }
 
         }
         if(numberOfImages>4){
-            Image newImage= new Image(image4);
-            imageDao.save(new Image(image4, post));
+            System.out.println(image4);
+            if (image4!=null) {
+                if (image4.equalsIgnoreCase("delete")) {
+                    imageDao.deleteById(Long.parseLong(imageId4));
+                }  else if(imageId0.equalsIgnoreCase("new")){
+                    imageDao.save(new Image( image4, post));
+                }else {
+                    imageDao.save(new Image(Long.parseLong(imageId4),image4, post));
+                }
+            }
 
         }
         return "redirect:/posts";
@@ -122,25 +164,33 @@ public class PostController {
         emailService.prepareAndSend(newPost, "New post created!", "Thanks for your new post!");
         if(numberOfImages>0){
             System.out.println(image0);
-            imageDao.save(new Image(image0, post));
+            if (image0!=null) {
+                imageDao.save(new Image(image0, post));
+            }
         }
         if(numberOfImages>1){
             System.out.println(image1);
-
-            imageDao.save(new Image(image1, post));
+            if (image1!=null) {
+                    imageDao.save(new Image(image1, post));
+                }
         }
         if(numberOfImages>2){
             System.out.println(image2);
-            imageDao.save(new Image(image2, post));
+            if (image2!=null) {
+                    imageDao.save(new Image(image2, post));
+            }
         }
         if(numberOfImages>3){
             Image newImage= new Image(image3);
-            imageDao.save(new Image(image3, post));
+            if (image3!=null) {
+                imageDao.save(new Image(image3, post));
+            }
 
         }
         if(numberOfImages>4){
-            Image newImage= new Image(image4);
-            imageDao.save(new Image(image4, post));
+            if (image4!=null) {
+                    imageDao.save(new Image(image4, post));
+                }
 
         }
 //        post.setImages(images);
