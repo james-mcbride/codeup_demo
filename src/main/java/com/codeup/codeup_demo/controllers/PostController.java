@@ -1,8 +1,10 @@
 package com.codeup.codeup_demo.controllers;
 
+import com.codeup.codeup_demo.models.Category;
 import com.codeup.codeup_demo.models.Image;
 import com.codeup.codeup_demo.models.Post;
 import com.codeup.codeup_demo.models.User;
+import com.codeup.codeup_demo.repos.CategoryRepository;
 import com.codeup.codeup_demo.repos.ImageRepository;
 import com.codeup.codeup_demo.repos.PostRepository;
 import com.codeup.codeup_demo.repos.UserRepository;
@@ -26,22 +28,26 @@ public class PostController {
     private final PostRepository postDao;
     private final UserRepository userDao;
     private final ImageRepository imageDao;
+    private final CategoryRepository categoryDao;
     private final EmailService emailService;
 
-    public PostController(PostRepository postDao, UserRepository userDao, ImageRepository imageDao, EmailService emailService) {
+    public PostController(PostRepository postDao, UserRepository userDao, ImageRepository imageDao, EmailService emailService, CategoryRepository categoryDao) {
         this.postDao = postDao;
         this.userDao=userDao;
         this.imageDao=imageDao;
         this.emailService=emailService;
+        this.categoryDao=categoryDao;
     }
 
 
     @GetMapping("/posts")
     public String viewPosts(Model model) {
         model.addAttribute("posts", postDao.findAll());
+        model.addAttribute("categories", categoryDao.findAll());
 
         return "posts/index";
     }
+
 
 //    @PostMapping("/posts")
 //    public String newPost(@ModelAttribute Post post,  Model model) {
@@ -57,6 +63,16 @@ public class PostController {
         return "posts/show";
     }
 
+    @GetMapping("/posts/category/{categoryId}")
+    public String showCategory(@PathVariable String categoryId ,Model model) {
+        Category searchedCategory = categoryDao.getOne(Long.parseLong(categoryId));
+        List<Post> posts = postDao.findPostsByCategoriesIsContaining(searchedCategory);
+//        post.setOwner(userDao.getOne(1L));
+        model.addAttribute("posts", posts);
+        model.addAttribute("categories", categoryDao.findAll());
+        return "posts/index";
+    }
+
     @GetMapping("/posts/{postId}/edit")
     public String editPost(@PathVariable String postId ,Model model) {
         model.addAttribute("post", postDao.getOne(Long.parseLong(postId)));
@@ -70,9 +86,12 @@ public class PostController {
         return "redirect:/posts";
     }
 
+
+
     @GetMapping("/posts/create")
     public String create(Model model) {
         model.addAttribute("post", new Post());
+        model.addAttribute("allCategories", categoryDao.findAll());
         Post post = new Post();
         System.out.println(post.getId());
         System.out.println();
@@ -157,9 +176,14 @@ public class PostController {
     }
 
     @PostMapping("/posts/create")
-    public String createPost(@ModelAttribute Post post, @RequestParam(required = false) String image0, @RequestParam(required = false) String image1, @RequestParam(required = false) String image2, @RequestParam(required = false) String image3, @RequestParam(required = false) String image4, @RequestParam(required = false) String image5, @RequestParam String numImages, Model model) {
+    public String createPost(@ModelAttribute Post post, @RequestParam(name = "categories") String[] postCategories, @RequestParam(required = false) String image0, @RequestParam(required = false) String image1, @RequestParam(required = false) String image2, @RequestParam(required = false) String image3, @RequestParam(required = false) String image4, @RequestParam(required = false) String image5, @RequestParam String numImages, Model model) {
         int numberOfImages=Integer.parseInt(numImages);
         post.setOwner((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        List<Category> categories = new ArrayList<>();
+        for (int i=0; i<postCategories.length; i++){
+            categories.add(categoryDao.getOne(Long.parseLong(postCategories[i])));
+        }
+       post.setCategories(categories);
         Post newPost = postDao.save(post);
         emailService.prepareAndSend(newPost, "New post created!", "Thanks for your new post!");
         if(numberOfImages>0){
@@ -202,7 +226,8 @@ public class PostController {
     @GetMapping("/posts/search")
     public String search(@RequestParam(name = "term") String term, Model model){
        model.addAttribute("posts",postDao.findPostsByTitleContainingOrBodyContaining(term, term));
-       return "posts/index";
+        model.addAttribute("categories", categoryDao.findAll());
+        return "posts/index";
 
     }
 

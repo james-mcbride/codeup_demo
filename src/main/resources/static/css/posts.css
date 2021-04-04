@@ -64,6 +64,7 @@
 #postContainer{
     padding:20px;
     height: 100%;
+    background-color: #ddffde;
 
 }
 #postForm .card-group{
@@ -75,7 +76,9 @@
 
 
 #blogImages .card{
-    height: 100%
+    height: 100%;
+    background-color: #ddffde;
+    border: none;
 }
 #blogImages img{
     max-height: 100%;
@@ -93,6 +96,8 @@
     width: 80%;
     margin-left: auto;
     margin-right: auto;
+    background-color: #ddffde;
+    border: none;
 }
 
 html{
@@ -142,6 +147,14 @@ body{
 
 .blogContent{
     position: relative
+}
+
+.postHeader{
+    position: relative;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 5px;
+    background-color: #ddffde;
 }
 
 .blogDate{

@@ -30,7 +30,17 @@
             <label for="exampleFormControlInput1">Post Title</label>
             <input type="text" class="form-control" th:field="*{title}" id="exampleFormControlInput1" name="title" placeholder="">
         </div>
+
         <textarea class="form-control" th:field="*{body}" id="exampleFormControlTextarea1" rows="3" placeholder="Write your post here..."></textarea>
+        <label >Post Category</label>
+        <select class="form-control" th:field="*{categories}" name="categories" multiple="multiple">
+            <option th:each="category : ${allCategories}"
+                    th:field="*{categories}"
+                    th:value="${category.id}"
+                    th:text="${category.category}">Part name</option>
+        </select>
+
+<!--        <input type="number" class="form-control" th:field="*{categories[__0__]}" id="exampleFormControlInput3" name="categories" placeholder="">-->
         <button id="addImage">Add Image!</button>
         <button type="submit" class="btn btn-primary">Submit Post</button>
     </form>

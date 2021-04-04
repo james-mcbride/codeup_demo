@@ -2,6 +2,7 @@ package com.codeup.codeup_demo.models;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -95,4 +96,25 @@ public class Post {
         this.body=body;
         this.id=id;
     }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public void addCategory(Category category){
+        categories.add(category);
+    }
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name="post_categories",
+            joinColumns={@JoinColumn(name="post_id")},
+            inverseJoinColumns={@JoinColumn(name="category_id")}
+    )
+    private List<Category> categories;
 }

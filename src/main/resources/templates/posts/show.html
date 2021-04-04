@@ -9,6 +9,11 @@
 <body>
 <nav th:replace="partials/partials :: navbar"></nav>
 <div id="postContainer">
+    <div class="postHeader">
+        <a th:href="${'/profile/'+post.getOwner().id}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true" th:text="${post.getOwner().getUsername()}">Primary link</a>
+        <div th:if="${post.getTime()}" class="card-text blogDate" th:text="${post.getTime().substring(0,11)}"/>
+        <div th:if="${post.getTime()}" class="card-text blogTime" th:text="${post.getTime().substring(11)}"/>
+    </div>
     <div class="card-group" id="blogImages" th:if="${post.getImages().size()>0}">
         <div class="card"
              th:each="image : ${post.getImages()}">
@@ -26,10 +31,7 @@
         <div class="card-body blogContent">
             <h2 class="card-title" th:text="${post.getTitle()}"/>
             <p class="card-text" th:text="${post.getBody()}"/>
-            <p th:if="${post.getOwner()}" class="card-text" th:text="${post.getOwner().getEmail()}"/>
-            <div th:if="${post.getTime()}" class="card-text blogDate" th:text="${post.getTime().substring(0,11)}"/>
-            <div th:if="${post.getTime()}" class="card-text blogTime" th:text="${post.getTime().substring(11)}"/>
-            <div sec:authorize="isAuthenticated()">
+           <div sec:authorize="isAuthenticated()">
 <!--                <div th:if="${#authentication.principal.id == post.getOwner().getId()}">Food</div>-->
 
                 <!--                <div th:text="${'Your id: ' + #authentication.principal.id + ' and the post id is: '+post.getOwner().getId()}">Food</div>-->
