@@ -13,4 +13,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findPostsByCategoriesIsContainingAndOwner(Category category, User owner);
 
     List<Post> findPostsByOwnerId(Long ownerId);
+
+    Post findPostByTitleContaining(String ad_to_be_deleted);
+
 }

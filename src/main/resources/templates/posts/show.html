@@ -39,8 +39,7 @@
                     <button type="submit" class="btn btn-primary">Edit Post</button>
                 </form>
 
-                <form th:if="${#authentication.principal.id == post.getOwner().getId()}" class="float-right" method="post" action="/posts/delete">
-                    <input type="hidden" name="postId" th:value="${post.getId()}">
+                <form th:if="${#authentication.principal.id == post.getOwner().getId()}" class="float-right" method="post" th:action="${'/posts/'+post.getId()+'/delete'}">
                     <button type="submit" class="btn btn-primary">Delete Post</button>
                 </form>
             </div>

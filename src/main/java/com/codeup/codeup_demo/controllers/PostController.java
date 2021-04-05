@@ -79,8 +79,8 @@ public class PostController {
         return "posts/create";
     }
 
-    @PostMapping("/posts/delete")
-    public String deletePost(@RequestParam(name = "postId") String postId,Model model) {
+    @PostMapping("/posts/{postId}/delete")
+    public String deletePost(@PathVariable String postId,Model model) {
         postDao.deleteById(Long.parseLong(postId));
         model.addAttribute("posts", postDao.findAll());
         return "redirect:/posts";
@@ -176,7 +176,12 @@ public class PostController {
     }
 
     @PostMapping("/posts/create")
-    public String createPost(@ModelAttribute Post post, @RequestParam(name = "categories") String[] postCategories, @RequestParam(required = false) String image0, @RequestParam(required = false) String image1, @RequestParam(required = false) String image2, @RequestParam(required = false) String image3, @RequestParam(required = false) String image4, @RequestParam(required = false) String image5, @RequestParam String numImages, Model model) {
+    public String createPost(@ModelAttribute Post post, @RequestParam(name = "categories", required = false) String[] postCategories, @RequestParam(required = false) String image0, @RequestParam(required = false) String image1, @RequestParam(required = false) String image2, @RequestParam(required = false) String image3, @RequestParam(required = false) String image4, @RequestParam(required = false) String image5, @RequestParam String numImages, Model model) {
+        System.out.println("new post body: "+post.getBody());
+        System.out.println("new post title: "+post.getTitle());
+        System.out.println("numImages: "+numImages);
+
+
         int numberOfImages=Integer.parseInt(numImages);
         post.setOwner((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         List<Category> categories = new ArrayList<>();
