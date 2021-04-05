@@ -17,25 +17,38 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/posts">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="/login" sec:authorize="!isAuthenticated()">Login <span class="sr-only"></span></a>
+
+
+            <li>
+                <form class="form-inline my-2 my-lg-0" method="get" action="/posts/search">
+                    <input class="form-control mr-sm-2" type="search" name="term" placeholder="Search"
+                           aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
             </li>
+
+
+        </ul>
+        <ul class="navbar-nav">
+            <!-- More links here... -->
             <li class="nav-item">
                 <a class="nav-link" href="/posts/create" sec:authorize="isAuthenticated()">Create Post</a>
             </li>
-        </ul>
-        <ul>
-            <!-- More links here... -->
-            <li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login" sec:authorize="!isAuthenticated()">Login <span class="sr-only"></span></a>
+            </li>
+            <li sec:authorize="isAuthenticated()" class="nav-item">
+                <a class="nav-link" th:href="${'/profile/'+#authentication.principal.id}" >Profile <span class="sr-only"></span></a>
+            </li>
+            <li >
                 <form th:action="@{/logout}" th:method="post" sec:authorize="isAuthenticated()">
-                    <button class="btn-link btn" style="margin-top: 8px">Logout</button>
+                    <button class="btn-link btn">Logout</button>
                 </form>
             </li>
+
+
         </ul>
-        <form class="form-inline my-2 my-lg-0"  method="get" action="/posts/search">
-            <input class="form-control mr-sm-2" type="search" name="term" placeholder="Search" aria-label="Search" >
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+
     </div>
 </nav>
 

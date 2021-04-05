@@ -13,7 +13,7 @@
 <nav th:replace="partials/partials :: navbar"></nav>
 <h2 class="text-center" th:text="${owner.getUsername()+'s Profile Page'}"></h2>
         <ul class="nav nav-tabs">
-            <li class="nav-item">
+            <li class="nav-item d-flex align-items-center">
                 <div><strong>Categories</strong></div>
             </li>
             <li class="nav-item" th:each="category : ${categories}">
@@ -31,7 +31,7 @@
                 <!--                <input type="hidden" name="postId" th:value="${item.getId()}">-->
                 <!--                <button type="submit" class="btn btn-primary">View Post</button>-->
                 <!--            </form>-->
-                <a th:href="${'posts/'+item.getId()}">
+                <a th:href="${'/posts/'+item.getId()}">
                     <button type="submit" class="btn btn-primary">View Post</button>
                 </a>
             </div>

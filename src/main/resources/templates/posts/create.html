@@ -30,15 +30,26 @@
             <label for="exampleFormControlInput1">Post Title</label>
             <input type="text" class="form-control" th:field="*{title}" id="exampleFormControlInput1" name="title" placeholder="">
         </div>
-
+        <label>Post Body</label>
         <textarea class="form-control" th:field="*{body}" id="exampleFormControlTextarea1" rows="3" placeholder="Write your post here..."></textarea>
-        <label >Post Category</label>
-        <select class="form-control" th:field="*{categories}" name="categories" multiple="multiple">
-            <option th:each="category : ${allCategories}"
-                    th:field="*{categories}"
-                    th:value="${category.id}"
-                    th:text="${category.category}">Part name</option>
-        </select>
+        <div class="row">
+
+            <div class="col-6">
+                <label>Pick a current category!</label>
+                <select class="form-control" th:field="*{categories}" name="categories" multiple="multiple" id="categories">
+                <option th:each="category : ${allCategories}"
+                        th:field="*{categories}"
+                        th:value="${category.id}"
+                        th:text="${category.category}">Part name
+                </option>
+            </select>
+            </div>
+            <div class="col-6">
+                <label>Add a new category!</label>
+                <input type="text" class="form-control"  id="newCategoryInput" name="newCategory" placeholder="Enter the name of your new category...">
+                <button type="button" id="newCategorySubmit">Submit</button>
+            </div>
+        </div>
 
 <!--        <input type="number" class="form-control" th:field="*{categories[__0__]}" id="exampleFormControlInput3" name="categories" placeholder="">-->
         <button id="addImage">Add Image!</button>
@@ -64,161 +75,186 @@
         </div>
         <textarea  class="form-control" th:field="*{body}"  rows="3" placeholder="" th:text="${post.getBody()}"></textarea>
 
-        <button id="addImageEdit">Add Image!</button>
+        <button type="button" id="addImageEdit">Add Image!</button>
         <button type="submit" class="btn btn-primary">Submit Post</button>
     </form>
 
 </div>
 
 
-<script>
+<script th:inline="javascript">
+
+
+
+
+    // creates logic for add new images button if creating new post.
     let url = window.location.href
     if (url.toString().includes("create")) {
+        //creating the logic for the submit new category button
+        let submitCategoryButton=document.getElementById("newCategorySubmit");
+        let categoriesList=document.getElementById("categories");
+
+        submitCategoryButton.addEventListener("click", ()=>{
+            let newCategoryName=document.getElementById("newCategoryInput").value;
+            event.preventDefault()
+            let newCategory=document.createElement("option");
+            newCategory.setAttribute("value", newCategoryName);
+            newCategory.innerText=newCategoryName
+            newCategory.setAttribute("field", [[${categories}]] )
+            newCategory.setAttribute("selected", true);
+            categoriesList.appendChild(newCategory)
+        })
+
         let addImageButton = document.getElementById("addImage");
-    let adImages = document.getElementById("adImages");
-    let imagesTotal=0;
-    let imageCount=document.createElement("input");
-    imageCount.setAttribute("type", "hidden");
-    imageCount.setAttribute("name", "numImages");
-    imageCount.setAttribute("value", imagesTotal);
-    adImages.appendChild(imageCount)
-
-
-
-    addImageButton.addEventListener("click", function (event) {
-        event.preventDefault();
-
-        let imageCard = document.createElement("div");
-        imageCard.setAttribute("class", "card");
-
-        let deleteButton=document.createElement("button");
-        deleteButton.setAttribute("id", `deleteButton${imagesTotal}`);
-        deleteButton.setAttribute("type", "button");
-        deleteButton.setAttribute("class", "btn btn-outline-danger")
-        deleteButton.innerHTML="delete";
-        imageCard.appendChild(deleteButton)
-
-
-        let cardBody = document.createElement("div");
-        cardBody.setAttribute("class", "card-body text-center");
-
-        let newImage = document.createElement("input");
-        let newImageLabel = document.createElement("label");
-        newImageLabel.setAttribute("for", `image${imagesTotal}`);
-        newImageLabel.innerText = "Insert image link"
-        newImage.setAttribute("type", "text")
-        newImage.setAttribute("id", `image${imagesTotal}`)
-        newImage.setAttribute("class", "form-control");
-        newImage.setAttribute("name", `image${imagesTotal}`)
-        cardBody.appendChild(newImageLabel);
-        cardBody.appendChild(newImage);
-        let image = document.createElement("img");
-        image.setAttribute("class", "card-img-top");
-        image.setAttribute("src", "/images/placeholder.png")
-        imageCard.appendChild(image);
-        imageCard.appendChild(cardBody)
-        adImages.appendChild(imageCard);
-        imagesTotal++;
-        adImages.removeChild(imageCount)
-        imageCount.setAttribute("value", `${imagesTotal}`);
+        let adImages = document.getElementById("adImages");
+        let imagesTotal = 0;
+        let imageCount = document.createElement("input");
+        imageCount.setAttribute("type", "hidden");
+        imageCount.setAttribute("name", "numImages");
+        imageCount.setAttribute("value", imagesTotal);
         adImages.appendChild(imageCount)
 
-        newImage.addEventListener("change", () => {
-            image.setAttribute("src", newImage.value)
-        })
 
-        deleteButton.addEventListener("click", ()=>{
-            adImages.removeChild(imageCard)
-        })
+        addImageButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            document.getElementById("adImages").style.height = "65%";
 
-    })
+
+            let imageCard = document.createElement("div");
+            imageCard.setAttribute("class", "card");
+
+            let deleteButton = document.createElement("button");
+            deleteButton.setAttribute("id", `deleteButton${imagesTotal}`);
+            deleteButton.setAttribute("type", "button");
+            deleteButton.setAttribute("class", "btn btn-outline-danger")
+            deleteButton.innerHTML = "delete";
+            imageCard.appendChild(deleteButton)
+
+
+            let cardBody = document.createElement("div");
+            cardBody.setAttribute("class", "card-body text-center");
+
+            let newImage = document.createElement("input");
+            let newImageLabel = document.createElement("label");
+            newImageLabel.setAttribute("for", `image${imagesTotal}`);
+            newImageLabel.innerText = "Insert image link"
+            newImage.setAttribute("type", "text")
+            newImage.setAttribute("id", `image${imagesTotal}`)
+            newImage.setAttribute("class", "form-control");
+            newImage.setAttribute("name", `image${imagesTotal}`)
+            cardBody.appendChild(newImageLabel);
+            cardBody.appendChild(newImage);
+            let image = document.createElement("img");
+            image.setAttribute("class", "card-img-top");
+            image.setAttribute("src", "/images/placeholder.png")
+            imageCard.appendChild(image);
+            imageCard.appendChild(cardBody)
+            adImages.appendChild(imageCard);
+            imagesTotal++;
+            adImages.removeChild(imageCount)
+            imageCount.setAttribute("value", `${imagesTotal}`);
+            adImages.appendChild(imageCount)
+
+            newImage.addEventListener("change", () => {
+                image.setAttribute("src", newImage.value)
+            })
+
+            deleteButton.addEventListener("click", () => {
+                adImages.removeChild(imageCard)
+            })
+
+        })
 }
 
+    if (url.toString().includes("edit")) {
 
-    let addImageEditButton = document.getElementById("addImageEdit");
-    let adImagesEdit = document.getElementById("adImagesEdit");
-    let imagesTotalEdit=document.getElementById("numEditImages")
+        let addImageEditButton = document.getElementById("addImageEdit");
+        let adImagesEdit = document.getElementById("adImagesEdit");
+        let imagesTotalEdit = document.getElementById("numEditImages")
 
-    for (let i=0; i<imagesTotalEdit.value; i++){
-        let deleteButton=document.getElementById(`deleteButton${i}`)
-        deleteButton.addEventListener("click",()=>{
-            let card=document.getElementById(`card${i}`);
-            let id=document.getElementById(`imageId${i}`).value
-            console.log(id)
-            adImagesEdit.removeChild(card);
-            let newImage=document.createElement("input");
-            newImage.setAttribute("type", "hidden")
-            newImage.setAttribute("id", `image${i}`)
-            newImage.setAttribute("name", `image${i}`)
-            newImage.setAttribute("value", "delete")
-            let newImageId=document.createElement("input");
+
+        for (let i = 0; i < imagesTotalEdit.value; i++) {
+            document.getElementById("adImagesEdit").style.height = "65%";
+
+            let deleteButton = document.getElementById(`deleteButton${i}`)
+            deleteButton.addEventListener("click", () => {
+                let card = document.getElementById(`card${i}`);
+                let id = document.getElementById(`imageId${i}`).value
+                console.log(id)
+                adImagesEdit.removeChild(card);
+                let newImage = document.createElement("input");
+                newImage.setAttribute("type", "hidden")
+                newImage.setAttribute("id", `image${i}`)
+                newImage.setAttribute("name", `image${i}`)
+                newImage.setAttribute("value", "delete")
+                let newImageId = document.createElement("input");
+                newImageId.setAttribute("type", "hidden")
+                newImageId.setAttribute("id", `imageId${i}`)
+                newImageId.setAttribute("name", `imageId${i}`)
+                newImageId.setAttribute("value", id)
+                adImagesEdit.appendChild(newImage)
+                adImagesEdit.appendChild(newImageId)
+            })
+        }
+
+        addImageEditButton.addEventListener("click", function (event) {
+            console.log('creating new image')
+            event.preventDefault();
+
+            let imageCard = document.createElement("div");
+            imageCard.setAttribute("class", "card");
+
+            let cardBody = document.createElement("div");
+            cardBody.setAttribute("class", "card-body text-center");
+
+            let deleteButton = document.createElement("button");
+            deleteButton.setAttribute("id", `deleteButton${imagesTotalEdit}`);
+            deleteButton.setAttribute("type", "button");
+            deleteButton.setAttribute("class", "btn btn-outline-danger")
+            deleteButton.innerHTML = "delete";
+            imageCard.appendChild(deleteButton)
+
+            let newImage = document.createElement("input");
+            let newImageLabel = document.createElement("label");
+            newImageLabel.setAttribute("for", `image${imagesTotalEdit.value}`);
+            newImageLabel.innerText = "Insert image link"
+            newImage.setAttribute("type", "text")
+            newImage.setAttribute("id", `image${imagesTotalEdit.value}`)
+            newImage.setAttribute("class", "form-control");
+            newImage.setAttribute("name", `image${imagesTotalEdit.value}`)
+            let newImageId = document.createElement("input");
             newImageId.setAttribute("type", "hidden")
-            newImageId.setAttribute("id", `imageId${i}`)
-            newImageId.setAttribute("name", `imageId${i}`)
-            newImageId.setAttribute("value", id)
-            adImagesEdit.appendChild(newImage)
+            newImageId.setAttribute("id", `imageId${imagesTotalEdit.value}`)
+            newImageId.setAttribute("name", `imageId${imagesTotalEdit.value}`)
+            newImageId.setAttribute("value", "new")
             adImagesEdit.appendChild(newImageId)
+            cardBody.appendChild(newImageLabel);
+            cardBody.appendChild(newImage);
+            let image = document.createElement("img");
+            image.setAttribute("class", "card-img-top");
+            image.setAttribute("src", "/images/placeholder.png")
+            imageCard.appendChild(image);
+            imageCard.appendChild(cardBody)
+            adImagesEdit.appendChild(imageCard);
+            imagesTotalEdit.value = Number(imagesTotalEdit.value) + 1
+            console.log(imagesTotalEdit.value)
+
+            newImage.addEventListener("change", () => {
+                image.setAttribute("src", newImage.value)
+            })
+
+            deleteButton.addEventListener("click", () => {
+                adImagesEdit.removeChild(imageCard);
+                let newImage = document.createElement("input");
+                newImage.setAttribute("type", "hidden")
+                newImage.setAttribute("id", `image${imagesTotalEdit.value}`)
+                newImage.setAttribute("name", `image${imagesTotalEdit.value}`)
+                newImage.setAttribute("value", "delete")
+            })
+
+
         })
     }
-
-
-    addImageEditButton.addEventListener("click", function(event){
-        console.log('creating new image')
-        event.preventDefault();
-
-        let imageCard=document.createElement("div");
-        imageCard.setAttribute("class", "card");
-
-        let cardBody=document.createElement("div");
-        cardBody.setAttribute("class", "card-body text-center");
-
-        let deleteButton=document.createElement("button");
-        deleteButton.setAttribute("id", `deleteButton${imagesTotalEdit}`);
-        deleteButton.setAttribute("type", "button");
-        deleteButton.setAttribute("class", "btn btn-outline-danger")
-        deleteButton.innerHTML="delete";
-        imageCard.appendChild(deleteButton)
-
-        let newImage=document.createElement("input");
-        let newImageLabel =document.createElement("label");
-        newImageLabel.setAttribute("for", `image${imagesTotalEdit.value}`);
-        newImageLabel.innerText="Insert image link"
-        newImage.setAttribute("type", "text")
-        newImage.setAttribute("id", `image${imagesTotalEdit.value}`)
-        newImage.setAttribute("class", "form-control");
-        newImage.setAttribute("name", `image${imagesTotalEdit.value}`)
-        let newImageId=document.createElement("input");
-        newImageId.setAttribute("type", "hidden")
-        newImageId.setAttribute("id", `imageId${imagesTotalEdit.value}`)
-        newImageId.setAttribute("name", `imageId${imagesTotalEdit.value}`)
-        newImageId.setAttribute("value", "new")
-        adImagesEdit.appendChild(newImageId)
-        cardBody.appendChild(newImageLabel);
-        cardBody.appendChild(newImage);
-        let image=document.createElement("img");
-        image.setAttribute("class", "card-img-top");
-        image.setAttribute("src", "/images/placeholder.png")
-        imageCard.appendChild(image);
-        imageCard.appendChild(cardBody)
-        adImagesEdit.appendChild(imageCard);
-        imagesTotalEdit.value=Number(imagesTotalEdit.value)+1
-        console.log(imagesTotalEdit.value)
-
-        newImage.addEventListener("change", ()=>{
-            image.setAttribute("src", newImage.value)
-        })
-
-        deleteButton.addEventListener("click", ()=>{
-            adImagesEdit.removeChild(imageCard);
-            let newImage=document.createElement("input");
-            newImage.setAttribute("type", "hidden")
-            newImage.setAttribute("id", `image${imagesTotalEdit.value}`)
-            newImage.setAttribute("name", `image${imagesTotalEdit.value}`)
-            newImage.setAttribute("value", "delete")
-        })
-
-
-    })
 
 </script>
 </body>

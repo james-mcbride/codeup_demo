@@ -68,7 +68,7 @@
 
 }
 #postForm .card-group{
-    height: 65%
+    /*height: 65%*/
 }
 .card-group{
     height: 50%;
@@ -108,13 +108,14 @@ body{
 }
 #adImages{
     justify-content: space-evenly;
+    height: 0;
+
 }
 #adImages .card{
-    max-width: 50%;
-    min-width: 300px;
+
     padding: 10px;
     height: 95%;
-    flex-grow: 0
+    flex-grow: 1;
 }
 
 #adImages img{
@@ -124,6 +125,9 @@ body{
 
 #adImagesEdit{
     justify-content: space-evenly;
+    height: 0;
+
+
 }
 #adImagesEdit .card-body{
     position: absolute;
@@ -133,11 +137,10 @@ body{
     background-color: rgba(255,255,255,.7)
 }
 #adImagesEdit .card{
-    max-width: 50%;
-    min-width: 300px;
+
     padding: 10px;
     height: 95%;
-    flex-grow: 0
+    flex-grow:1;
 }
 
 #adImagesEdit img{

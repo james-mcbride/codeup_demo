@@ -77,6 +77,7 @@ public class UserController {
         List<Post> posts = postDao.findPostsByCategoriesIsContainingAndOwner(searchedCategory, users.getOne(Long.parseLong(ownerId)));
 //        post.setOwner(userDao.getOne(1L));
         model.addAttribute("posts", posts);
+        model.addAttribute("owner", users.getOne(Long.parseLong(ownerId)));
         model.addAttribute("categories", categoryDao.findAll());
         return "users/profile";
     }

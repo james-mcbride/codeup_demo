@@ -15,8 +15,7 @@
         <div th:if="${post.getTime()}" class="card-text blogTime" th:text="${post.getTime().substring(11)}"/>
     </div>
     <div class="card-group" id="blogImages" th:if="${post.getImages().size()>0}">
-        <div class="card"
-             th:each="image : ${post.getImages()}">
+        <div class="card" th:each="image : ${post.getImages()}">
             <img class="card-img-top" th:src="${image.getPath()}" alt="Card image cap">
             <div class="card-body">
 <!--                <h5 class="card-title">Card title</h5>-->

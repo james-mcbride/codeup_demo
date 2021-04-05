@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class PostController {
@@ -43,7 +40,7 @@ public class PostController {
     @GetMapping("/posts")
     public String viewPosts(Model model) {
         model.addAttribute("posts", postDao.findAll());
-        model.addAttribute("categories", categoryDao.findAll());
+        model.addAttribute("categories", categoryDao.findAll().subList(0,34));
 
         return "posts/index";
     }
@@ -186,7 +183,22 @@ public class PostController {
         post.setOwner((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         List<Category> categories = new ArrayList<>();
         for (int i=0; i<postCategories.length; i++){
-            categories.add(categoryDao.getOne(Long.parseLong(postCategories[i])));
+            String category = postCategories[i];
+            System.out.println(postCategories[i]);
+
+            //Here, we will check each submitted category and see if there are any new ones being submitted.
+            Boolean isNewCategory =false;
+            try {
+                double d = Double.parseDouble(category);
+            } catch (NumberFormatException nfe) {
+                isNewCategory=true;
+            }
+            if (isNewCategory){
+                Category newCategory=categoryDao.save(new Category(category));
+                categories.add(newCategory);
+            } else {
+                categories.add(categoryDao.getOne(Long.parseLong(category)));
+            }
         }
        post.setCategories(categories);
         Post newPost = postDao.save(post);
